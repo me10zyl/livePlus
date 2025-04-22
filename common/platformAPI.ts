@@ -182,6 +182,7 @@ export async function getDouyinFollowing(cookie: string): Promise<Streamer[]> {
 
 // 统一平台API调用
 export async function getFollowingList(platform: PlatformType, cookie: string): Promise<Streamer[]> {
+  console.log('getFollowingList', platform, cookie);
   switch (platform) {
     case 'douyu':
       return getDouyuFollowing(cookie);

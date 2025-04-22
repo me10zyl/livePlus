@@ -12,6 +12,7 @@ const Settings: React.FC = () => {
   const handleCookieSave = async (cookie: string) => {
     // 保存后刷新数据
     try {
+      console.log('保存Cookie');
       await window.electron.getFollowingList(activePlatform);
     } catch (error) {
       console.error('刷新关注列表失败', error);

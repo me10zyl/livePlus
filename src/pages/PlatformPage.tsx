@@ -13,6 +13,8 @@ const PlatformPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!platform) return;
+
+      console.log(`Fetching data for platform: ${platform}`);
       
       try {
         setLoading(true);

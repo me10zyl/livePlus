@@ -50,7 +50,7 @@ export async function getDouyinFollowList(cookies: string): Promise<Streamer[]> 
                 try {
                     // 尝试解析响应数据
                     const responseData = await response.json().catch(() => null);
-                    console.log('收到抖音API响应:', url);
+                    console.log('收到抖音API响应');
                     
                     if (responseData && responseData.data && Array.isArray(responseData.data.data)) {
                         // 标记为已处理

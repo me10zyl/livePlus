@@ -47,6 +47,7 @@ function createWindow() {
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
+    win.webContents.openDevTools()
   } else {
     // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, 'index.html'))
@@ -90,6 +91,7 @@ ipcMain.handle('get-following-list', async (event, platform) => {
   if(!cookies){
     return {error: '未设置Cookie'}
   }
+  console.log('获取关注列表,',platform)
   try {
     switch (platform) {
       case 'douyin':
