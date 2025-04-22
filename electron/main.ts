@@ -1,8 +1,14 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow,ipcMain } from 'electron'
 //import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
-
+import Store from 'electron-store';
+import {getDouyuFollowList} from "./platforms/douyu";
+import {getBilibiliFollowList} from "./platforms/bilibili";
+import {getHuyaFollowList} from "./platforms/huya";
+import {getDouyinFollowList} from './platforms/douyin'
+// 初始化存储
+const store = new Store();
 //const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
