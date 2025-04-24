@@ -3,6 +3,7 @@ import axios from "axios";
 import {Streamer} from "../../common/types";
 
 export async function getDouyuFollowList(cookies: string): Promise<Streamer[]> {
+    console.log('开始获取斗鱼关注列表...');
     const response = await axios.get('https://www.douyu.com/wgapi/livenc/liveweb/follow/list?sort=0&cid1=0', {
         headers: {
             Cookie: cookies,

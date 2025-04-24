@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer';
 import { Streamer } from "../../common/types";
 
 export async function getDouyinFollowList(cookies: string): Promise<Streamer[]> {
+    console.log('开始获取抖音关注列表...');
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 

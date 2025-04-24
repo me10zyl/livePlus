@@ -11,7 +11,7 @@ const PlatformPage: React.FC = () => {
   const [hasCookie, setHasCookie] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (force:boolean =false) => {
       if (!platform) return;
 
       console.log(`Fetching data for platform: ${platform}`);
@@ -31,7 +31,7 @@ const PlatformPage: React.FC = () => {
         }
         
         // 获取关注列表
-        const followingList = await window.electron.getFollowingList(platform as PlatformType);
+        const followingList = await window.electron.getFollowingList(platform as PlatformType, force);
         
         if (Array.isArray(followingList)) {
           setStreamers(followingList);
@@ -65,7 +65,9 @@ const PlatformPage: React.FC = () => {
         <h1>{getPlatformName()}关注列表</h1>
         <button 
           className="refresh-button"
-          onClick={() => window.location.reload()}
+          onClick={() => {
+              fetchData(true);
+          }}
           disabled={loading}
         >
           刷新

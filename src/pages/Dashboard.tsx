@@ -41,7 +41,8 @@ const Dashboard: React.FC<DashboardProps> = ({ streamers }) => {
     try {
       await Promise.all(platforms.map(async platform => {
         try {
-          await window.electron.getFollowingList(platform);
+          // 传递 true 作为第二个参数，表示强制刷新
+          await window.electron.getFollowingList(platform, true);
         } catch (error) {
           console.error(`刷新${platform}失败`, error);
         }

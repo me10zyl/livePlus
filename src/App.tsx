@@ -13,7 +13,7 @@ declare global {
     electron: {
       getCookie: (platform: string) => Promise<string>;
       setCookie: (platform: string, cookie: string) => Promise<boolean>;
-      getFollowingList: (platform: string) => Promise<Streamer[]>;
+      getFollowingList: (platform: string, forceRefresh: boolean) => Promise<Streamer[]>;
       setFollowingList: (platform: string, list: Streamer[]) => Promise<boolean>;
     };
   }

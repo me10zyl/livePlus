@@ -2,6 +2,7 @@ import {Streamer} from "../../common/types.ts";
 import axios from "axios";
 
 export async function getBilibiliFollowList(cookies: string): Promise<Streamer[]> {
+    console.log('开始获取B站关注列表...');
     let allStreamers: Streamer[] = [];
     let currentPage = 1;
     let totalPage = 1;

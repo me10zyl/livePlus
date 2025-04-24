@@ -23,6 +23,6 @@ contextBridge.exposeInMainWorld('electron', {
   setCookie: (platform: string, cookie: string) => ipcRenderer.invoke('set-cookie', platform, cookie),
 
   // 关注列表相关操作
-  getFollowingList: (platform: string) => ipcRenderer.invoke('get-following-list', platform),
+  getFollowingList: (platform: string, forceRefresh: boolean) => ipcRenderer.invoke('get-following-list', platform, forceRefresh),
   setFollowingList: (platform: string, list: any[]) => ipcRenderer.invoke('set-following-list', platform, list),
 })
