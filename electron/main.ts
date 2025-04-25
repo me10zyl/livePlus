@@ -3,10 +3,8 @@ import { app, BrowserWindow,ipcMain } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import Store from 'electron-store';
-import {getDouyuFollowList} from "./platforms/douyu";
-import {getBilibiliFollowList} from "./platforms/bilibili";
-import {getHuyaFollowList} from "./platforms/huya";
-import {getDouyinFollowList} from './platforms/douyin'
+import { getFollowingList } from './platforms/platformAPI';
+
 // 初始化存储
 const store = new Store();
 //const require = createRequire(import.meta.url)
@@ -86,49 +84,7 @@ ipcMain.handle('set-cookie', async (event, platform, cookie) => {
 });
 
 ipcMain.handle('get-following-list', async (event, platform, forceRefresh = false) => {
-  // 如果不强制刷新，先尝试从缓存获取
-  if (!forceRefresh) {
-    const cachedList = store.get(`followingList.${platform}`, null);
-    if (cachedList) {
-      console.log(`使用${platform}缓存数据`);
-      return cachedList;
-    }
-  }
-  
-  const cookies = store.get(`cookies.${platform}`, '') as string
-  if(!cookies){
-    return {error: '未设置Cookie'}
-  }
-  console.log('获取关注列表,', platform, forceRefresh ? '(强制刷新)' : '')
-  try {
-    let result;
-    switch (platform) {
-      case 'douyin':
-        result = await getDouyinFollowList(cookies);
-        break;
-      case 'douyu':
-        result = await getDouyuFollowList(cookies);
-        break;
-      case 'bilibili':
-        result = await getBilibiliFollowList(cookies);
-        break;
-      case 'huya':
-        result = await getHuyaFollowList(cookies);
-        break;
-      default:
-        throw new Error('不支持的平台');
-    }
-    
-    // 将结果保存到缓存
-    if (!result.error && result.length > 0) {
-      store.set(`followingList.${platform}`, result);
-    }
-    
-    return result;
-  } catch (error) {
-    console.error(`获取${platform}关注列表失败:`, error);
-    return { error: '获取关注列表失败' };
-  }
+  getFollowingList(platform, forceRefresh);
 });
 
 ipcMain.handle('set-following-list', async (event, platform, list) => {

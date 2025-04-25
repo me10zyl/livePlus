@@ -1,7 +1,7 @@
-import {Streamer} from "../../common/types.ts";
+import {Streamer, ApiResponse} from "../../common/types.ts";
 import axios from "axios";
 
-export async function getBilibiliFollowList(cookies: string): Promise<Streamer[]> {
+export async function getBilibiliFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {
     console.log('开始获取B站关注列表...');
     let allStreamers: Streamer[] = [];
     let currentPage = 1;
@@ -20,7 +20,7 @@ export async function getBilibiliFollowList(cookies: string): Promise<Streamer[]
         let data = response.data;
         
         if (data.code !== 0) {
-            return [];
+            return {error: '获取bibibi关注者列表失败', success: false, data: []};
         }
         
         // 获取总页数
@@ -49,7 +49,7 @@ export async function getBilibiliFollowList(cookies: string): Promise<Streamer[]
         
     } while (currentPage <= totalPage);
     
-    return allStreamers;
+    return {data:allStreamers, success: true};
 }
 
 // 辅助函数：将B站的观看人数字符串转换为数字

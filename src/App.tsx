@@ -4,7 +4,7 @@ import { default as Sidebar } from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
 import PlatformPage from './pages/PlatformPage';
-import { Streamer, PlatformType } from '../common/types';
+import { Streamer, PlatformType ,ApiResponse} from '../common/types';
 import './styles/App.css';
 
 // 定义声明electron全局对象
@@ -13,7 +13,7 @@ declare global {
     electron: {
       getCookie: (platform: string) => Promise<string>;
       setCookie: (platform: string, cookie: string) => Promise<boolean>;
-      getFollowingList: (platform: string, forceRefresh: boolean) => Promise<Streamer[]>;
+      getFollowingList: (platform: string, forceRefresh?: boolean) => Promise<ApiResponse<Streamer[]>>;
       setFollowingList: (platform: string, list: Streamer[]) => Promise<boolean>;
     };
   }
@@ -33,11 +33,11 @@ function App() {
       setLoading(true);
       // 从缓存中获取之前保存的列表
       console.log('获取关注列表(' + platform + ")")
-      const followingList = await window.electron.getFollowingList(platform);
-      console.log('关注列表结果(' + platform + ")", followingList)
-      if (followingList && followingList.length > 0) {
+      const response = await window.electron.getFollowingList(platform);
+      console.log('关注列表结果(' + platform + ")", response)
+      if (response.success && response.data && response.data.length > 0) {
         console.log('添加关注列表(' + platform + ")到streamers")
-        setStreamers(prev => ({ ...prev, [platform]: followingList }));
+        setStreamers(prev => ({ ...prev, [platform]: response.data }));
       }
       setLoading(false);
     } catch (error) {
@@ -77,4 +77,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;

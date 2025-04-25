@@ -9,43 +9,41 @@ const PlatformPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasCookie, setHasCookie] = useState(false);
+  const fetchData = async (force:boolean =false) => {
+    if (!platform) return;
 
-  useEffect(() => {
-    const fetchData = async (force:boolean =false) => {
-      if (!platform) return;
-
-      console.log(`Fetching data for platform: ${platform}`);
-      
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // 检查是否有Cookie
-        const cookie = await window.electron.getCookie(platform as PlatformType);
-        setHasCookie(!!cookie);
-        
-        if (!cookie) {
-          setError('未设置Cookie，请先在设置页面配置平台Cookie');
-          setLoading(false);
-          return;
-        }
-        
-        // 获取关注列表
-        const followingList = await window.electron.getFollowingList(platform as PlatformType, force);
-        
-        if (Array.isArray(followingList)) {
-          setStreamers(followingList);
-        } else {
-          setError('获取数据失败，请检查Cookie是否有效');
-        }
-      } catch (error) {
-        console.error(`获取${platform}关注列表失败`, error);
-        setError(`获取数据失败: ${error instanceof Error ? error.message : String(error)}`);
-      } finally {
-        setLoading(false);
-      }
-    };
+    console.log(`Fetching data for platform: ${platform}`);
     
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // 检查是否有Cookie
+      const cookie = await window.electron.getCookie(platform as PlatformType);
+      setHasCookie(!!cookie);
+      
+      if (!cookie) {
+        setError('未设置Cookie，请先在设置页面配置平台Cookie');
+        setLoading(false);
+        return;
+      }
+      
+      // 获取关注列表
+      const response = await window.electron.getFollowingList(platform as PlatformType, force);
+      
+      if (response.success && response.data) {
+        setStreamers(response.data);
+      } else {
+        setError(response.error || '获取数据失败，请检查Cookie是否有效');
+      }
+    } catch (error) {
+      console.error(`获取${platform}关注列表失败`, error);
+      setError(`获取数据失败: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [platform]);
 

@@ -1,7 +1,7 @@
-import {Streamer} from "../../common/types.ts";
+import {Streamer,ApiResponse} from "../../common/types.ts";
 import puppeteer from 'puppeteer';
 
-export async function getHuyaFollowList(cookies: string): Promise<Streamer[]> {
+export async function getHuyaFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {
     console.log('开始获取虎牙关注列表...');
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
@@ -71,5 +71,5 @@ export async function getHuyaFollowList(cookies: string): Promise<Streamer[]> {
 
     await browser.close();
 
-    return followList;
+    return {data:followList, success:true};
 }

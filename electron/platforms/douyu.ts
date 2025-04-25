@@ -1,8 +1,8 @@
 // 斗鱼关注列表
 import axios from "axios";
-import {Streamer} from "../../common/types";
+import {Streamer, ApiResponse} from "../../common/types";
 
-export async function getDouyuFollowList(cookies: string): Promise<Streamer[]> {
+export async function getDouyuFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {
     console.log('开始获取斗鱼关注列表...');
     const response = await axios.get('https://www.douyu.com/wgapi/livenc/liveweb/follow/list?sort=0&cid1=0', {
         headers: {
@@ -14,7 +14,8 @@ export async function getDouyuFollowList(cookies: string): Promise<Streamer[]> {
     // 假设API返回JSON格式的关注主播列表
     let data = response.data;
     if(data.error != 0){
-        return [];
+        console.log('获取斗鱼关注列表失败:', data);
+        return {data: [], success:false, error:data.msg};
     }
     
     // 将API返回的数据转换为Streamer类型的数组
@@ -34,7 +35,7 @@ export async function getDouyuFollowList(cookies: string): Promise<Streamer[]> {
         };
     });
     
-    return streamers;
+    return {data:streamers, success:true};
 }
 
 // 辅助函数：将斗鱼的观看人数字符串转换为数字

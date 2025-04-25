@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
-import { Streamer } from "../../common/types";
+import { Streamer ,ApiResponse} from "../../common/types";
 
-export async function getDouyinFollowList(cookies: string): Promise<Streamer[]> {
+export async function getDouyinFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {
     console.log('开始获取抖音关注列表...');
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
@@ -24,7 +24,7 @@ export async function getDouyinFollowList(cookies: string): Promise<Streamer[]> 
 
     if (cookieArray.length === 0) {
         console.error('没有有效的Cookies');
-        return [];
+        return {error: '没有有效的Cookies', success: false, data: []};;
     }
     await page.setCookie(...cookieArray);
 
@@ -110,5 +110,5 @@ export async function getDouyinFollowList(cookies: string): Promise<Streamer[]> 
     // 关闭浏览器
     await browser.close();
     console.log('抖音关注列表获取完成，共', streamers.length, '个主播');
-    return streamers;
+    return {data:streamers, success:true };
 }
