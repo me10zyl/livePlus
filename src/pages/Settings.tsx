@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import CookieSettings from '../components/CookieSettings';
 import { PlatformType } from '../../common/types';
 
@@ -10,15 +11,18 @@ const Settings: React.FC = () => {
   const platforms: PlatformType[] = ['douyu', 'bilibili', 'huya', 'douyin'];
   
   const handleCookieSave = async (cookie: string) => {
-    // 保存后刷新数据
     try {
       console.log('保存Cookie');
       const response = await window.electron.getFollowingList(activePlatform);
       if (!response.success) {
         console.error('刷新关注列表失败:', response.error);
+        toast.error(`刷新关注列表失败: ${response.error}`);
+      } else {
+        toast.success('Cookie保存成功');
       }
     } catch (error) {
       console.error('刷新关注列表失败', error);
+      toast.error(`刷新关注列表失败: ${error}`);
     }
   };
   

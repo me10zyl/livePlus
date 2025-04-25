@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import StreamerList from '../components/StreamerList';
 import { Streamer, PlatformType } from '../../common/types';
@@ -18,27 +19,34 @@ const PlatformPage: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      // 检查是否有Cookie
       const cookie = await window.electron.getCookie(platform as PlatformType);
       setHasCookie(!!cookie);
       
       if (!cookie) {
-        setError('未设置Cookie，请先在设置页面配置平台Cookie');
+        const errorMsg = '未设置Cookie，请先在设置页面配置平台Cookie';
+        setError(errorMsg);
+        toast.error(errorMsg);
         setLoading(false);
         return;
       }
       
-      // 获取关注列表
       const response = await window.electron.getFollowingList(platform as PlatformType, force);
       
       if (response.success && response.data) {
         setStreamers(response.data);
+        if (force) {
+          toast.success('刷新成功');
+        }
       } else {
-        setError(response.error || '获取数据失败，请检查Cookie是否有效');
+        const errorMsg = response.error || '获取数据失败，请检查Cookie是否有效';
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
+      const errorMsg = `获取数据失败: ${error instanceof Error ? error.message : String(error)}`;
       console.error(`获取${platform}关注列表失败`, error);
-      setError(`获取数据失败: ${error instanceof Error ? error.message : String(error)}`);
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }

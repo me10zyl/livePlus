@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { Streamer, PlatformType } from '../../common/types';
 import StreamerList from '../components/StreamerList';
@@ -38,18 +39,25 @@ const Dashboard: React.FC<DashboardProps> = ({ streamers }) => {
     setLoading(true);
     const platforms: PlatformType[] = ['douyu', 'bilibili', 'huya', 'douyin'];
     
+    let hasError = false;
     try {
       await Promise.all(platforms.map(async platform => {
         try {
-          // 传递 true 作为第二个参数，表示强制刷新
           const response = await window.electron.getFollowingList(platform, true);
           if (!response.success) {
-            throw new Error(response.error || '未知错误');
+            hasError = true;
+            toast.error(`刷新${platform}失败: ${response.error || '未知错误'}`);
           }
         } catch (error) {
+          hasError = true;
           console.error(`刷新${platform}失败`, error);
+          toast.error(`刷新${platform}失败: ${error}`);
         }
       }));
+      
+      if (!hasError) {
+        toast.success('所有平台刷新成功');
+      }
     } finally {
       setLoading(false);
     }

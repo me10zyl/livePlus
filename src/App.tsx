@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { default as Sidebar } from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
@@ -38,25 +40,17 @@ function App() {
       if (response.success && response.data && response.data.length > 0) {
         console.log('添加关注列表(' + platform + ")到streamers")
         setStreamers(prev => ({ ...prev, [platform]: response.data }));
+      } else if (!response.success) {
+        // 使用 toast 显示错误信息
+        toast.error(`获取${platform}关注列表失败: ${response.error}`);
       }
       setLoading(false);
     } catch (error) {
       console.error(`获取${platform}关注列表失败`, error);
+      toast.error(`获取${platform}关注列表失败: ${error}`);
       setLoading(false);
     }
   };
-
-  // 首次加载默认获取所有平台数据
-  useEffect(() => {
-    console.log('首次加载默认获取所有平台数据')
-    const platforms: PlatformType[] = ['douyu', 'bilibili', 'huya', 'douyin'];
-    platforms.forEach(platform => {
-      fetchFollowingData(platform);
-    });
-    // 默认选中斗鱼平台
-
-    //setActivePlatform('douyu');
-  }, []);
 
   return (
     <div className="app-container">
@@ -73,6 +67,20 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      
+      {/* 添加 Toast 容器 */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }
