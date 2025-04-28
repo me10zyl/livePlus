@@ -1,6 +1,10 @@
 import {Streamer, ApiResponse} from "../../common/types.ts";
 import axios from "axios";
 
+export async function isBilibiliLiving(streamer: Streamer): Promise<boolean> {
+
+}
+
 export async function getBilibiliFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {
     console.log('开始获取B站关注列表(非缓存)...');
     let allStreamers: Streamer[] = [];

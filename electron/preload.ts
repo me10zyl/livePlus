@@ -1,4 +1,5 @@
 import { ipcRenderer, contextBridge } from 'electron'
+import {Streamer} from "../common/types.ts";
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('electron', {
@@ -25,4 +26,6 @@ contextBridge.exposeInMainWorld('electron', {
   // 关注列表相关操作
   getFollowingList: (platform: string, forceRefresh: boolean) => ipcRenderer.invoke('get-following-list', platform, forceRefresh),
   setFollowingList: (platform: string, list: any[]) => ipcRenderer.invoke('set-following-list', platform, list),
+
+  isLiving: (streamer: Streamer) => ipcRenderer.invoke('is-living', streamer),
 })

@@ -2,10 +2,31 @@ import { ApiResponse, PlatformType,Streamer } from "../../common/types";
 import {getDouyuFollowList} from "./douyu";
 import {getBilibiliFollowList} from "./bilibili";
 import {getHuyaFollowList} from "./huya";
-import {getDouyinFollowList} from './douyin'
+import {getDouyinFollowList, isDouYinLiving} from './douyin'
 import Store from 'electron-store';
 
 const store = new Store();
+
+export async function isLiving(streamer: Streamer){
+  let result = false
+  switch (streamer.platform) {
+    case 'douyin':
+      result = await isDouYinLiving(streamer);
+      break;
+    case 'douyu':
+      result = await isDouyuLiving(streamer);
+      break;
+    case 'bilibili':
+      result = await isBilibiliLiving(streamer);
+      break;
+    case 'huya':
+      result = await isHuyaLiving(streamer);
+      break;
+    default:
+      throw new Error('不支持的平台');
+  }
+  return result
+}
 
 
 export async function getFollowingList( platform:PlatformType, forceRefresh = false): Promise<ApiResponse<Streamer[]>> {

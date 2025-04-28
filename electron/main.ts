@@ -91,3 +91,7 @@ ipcMain.handle('set-following-list', async (event, platform, list) => {
   store.set(`followingList.${platform}`, list);
   return true;
 });
+
+ipcMain.handle('is-living', async (event, streamer) => {
+  return
+})

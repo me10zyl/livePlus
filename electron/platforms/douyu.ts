@@ -2,6 +2,11 @@
 import axios from "axios";
 import {Streamer, ApiResponse} from "../../common/types";
 
+export async function isDouyuLiving(streamer: Streamer): Promise<boolean> {
+
+}
+
+
 export async function getDouyuFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {
     console.log('开始获取斗鱼关注列表(非缓存)...');
     const response = await axios.get('https://www.douyu.com/wgapi/livenc/liveweb/follow/list?sort=0&cid1=0', {
