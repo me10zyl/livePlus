@@ -18,7 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePlatform, setActivePlatform }) 
   ];
 
   const isActive = (platform: PlatformType) => {
-    return activePlatform === platform || location.pathname === `/platform/${platform}`;
+    return activePlatform === platform && location.pathname === `/platform/${platform}`;
   };
 
   return (

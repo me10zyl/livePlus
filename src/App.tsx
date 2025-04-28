@@ -34,11 +34,10 @@ function App() {
     try {
       setLoading(true);
       // 从缓存中获取之前保存的列表
-      console.log('获取关注列表(' + platform + ")")
+
       const response = await window.electron.getFollowingList(platform);
-      console.log('关注列表结果(' + platform + ")", response)
+
       if (response.success && response.data && response.data.length > 0) {
-        console.log('添加关注列表(' + platform + ")到streamers")
         setStreamers(prev => ({ ...prev, [platform]: response.data }));
       } else if (!response.success) {
         // 使用 toast 显示错误信息
@@ -52,13 +51,13 @@ function App() {
     }
   };
 
-  useEffect(() => {
+ /* useEffect(() => {
     console.log('首次加载默认获取所有平台数据')
     const platforms: PlatformType[] = ['douyu', 'bilibili', 'huya', 'douyin'];
     platforms.forEach(platform => {
       fetchFollowingData(platform);
     });
-  }, []);
+  }, []);*/
 
   return (
     <div className="app-container">
@@ -69,7 +68,7 @@ function App() {
     
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<Dashboard streamers={streamers} />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/platform/:platform" element={<PlatformPage />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />

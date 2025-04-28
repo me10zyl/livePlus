@@ -22,7 +22,6 @@ if (!forceRefresh) {
   if(!cookies){
     return {error: '未设置Cookie', 'success' : false}
   }
-  console.log('获取关注列表,', platform, forceRefresh ? '(强制刷新)' : '')
   try {
     let result: ApiResponse<Streamer[]>;
     switch (platform) {

@@ -9,13 +9,15 @@ interface DashboardProps {
 }
 
 // 在 Dashboard 组件中添加平台统计信息
-const Dashboard: React.FC<DashboardProps> = ({ streamers }) => {
+const Dashboard: React.FC<DashboardProps> = () => {
   const [liveStreamers, setLiveStreamers] = useState<Streamer[]>([]);
   const [loading, setLoading] = useState(false);
   const [allLoading, setAllLoading] = useState(false);
+  const [streamers, setStreamers] = useState<{[key in PlatformType]?: Streamer[]}>({});
   
   // 从所有平台提取正在直播的主播
   useEffect(() => {
+    console.log('开始提取正在直播的主播');
     const allLiveStreamers: Streamer[] = [];
     
     Object.values(streamers).forEach(platformStreamers => {
@@ -35,24 +37,28 @@ const Dashboard: React.FC<DashboardProps> = ({ streamers }) => {
     setLiveStreamers(allLiveStreamers);
   }, [streamers]);
 
-  const refreshAllPlatforms = async () => {
+  useEffect(()=>{
+    console.log('Dashboard进入');
+    refreshAllPlatforms(false)
+  }, []);
+
+  const refreshAllPlatforms = async (force:boolean = true) => {
     console.log('开始刷新所有平台');
     setLoading(true);
     setAllLoading(true);
-    setLiveStreamers([]);
     const platforms: PlatformType[] = ['douyu', 'bilibili', 'huya', 'douyin'];
     
     let hasError = false;
     try {
       await Promise.all(platforms.map(async platform => {
         try {
-          const response = await window.electron.getFollowingList(platform, true);
+          const response = await window.electron.getFollowingList(platform, force);
           console.log(`刷新${platform}完成`, response);
           if (!response.success) {
             hasError = true;
             toast.error(`刷新${platform}失败: ${response.error || '未知错误'}`);
           }else{
-            setLiveStreamers([...liveStreamers, ...(response.data || [])])
+            setStreamers(prev => ({ ...prev, [platform]: response.data }));
           }
         } catch (error) {
           hasError = true;
@@ -63,7 +69,9 @@ const Dashboard: React.FC<DashboardProps> = ({ streamers }) => {
       }));
       
       if (!hasError) {
-        toast.success('所有平台刷新成功');
+        if(force){
+          toast.success('所有平台刷新成功');
+        }
       }
     } finally {
       setLoading(false);
