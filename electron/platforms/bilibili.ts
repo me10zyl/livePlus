@@ -20,7 +20,7 @@ export async function getBilibiliFollowList(cookies: string): Promise<ApiRespons
         let data = response.data;
         
         if (data.code !== 0) {
-            return {error: '获取bibibi关注者列表失败', success: false, data: []};
+            return {error: '获取bibibi关注者列表失败:' + JSON.stringify(data), success: false, data: []};
         }
         
         // 获取总页数

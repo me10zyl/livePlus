@@ -52,6 +52,14 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    console.log('首次加载默认获取所有平台数据')
+    const platforms: PlatformType[] = ['douyu', 'bilibili', 'huya', 'douyin'];
+    platforms.forEach(platform => {
+      fetchFollowingData(platform);
+    });
+  }, []);
+
   return (
     <div className="app-container">
       <Sidebar 

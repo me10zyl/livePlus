@@ -12,6 +12,7 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ streamers }) => {
   const [liveStreamers, setLiveStreamers] = useState<Streamer[]>([]);
   const [loading, setLoading] = useState(false);
+  const [allLoading, setAllLoading] = useState(false);
   
   // 从所有平台提取正在直播的主播
   useEffect(() => {
@@ -37,6 +38,8 @@ const Dashboard: React.FC<DashboardProps> = ({ streamers }) => {
   const refreshAllPlatforms = async () => {
     console.log('开始刷新所有平台');
     setLoading(true);
+    setAllLoading(true);
+    setLiveStreamers([]);
     const platforms: PlatformType[] = ['douyu', 'bilibili', 'huya', 'douyin'];
     
     let hasError = false;
@@ -44,15 +47,19 @@ const Dashboard: React.FC<DashboardProps> = ({ streamers }) => {
       await Promise.all(platforms.map(async platform => {
         try {
           const response = await window.electron.getFollowingList(platform, true);
+          console.log(`刷新${platform}完成`, response);
           if (!response.success) {
             hasError = true;
             toast.error(`刷新${platform}失败: ${response.error || '未知错误'}`);
+          }else{
+            setLiveStreamers([...liveStreamers, ...(response.data || [])])
           }
         } catch (error) {
           hasError = true;
           console.error(`刷新${platform}失败`, error);
           toast.error(`刷新${platform}失败: ${error}`);
         }
+        setAllLoading(false)
       }));
       
       if (!hasError) {
@@ -116,7 +123,7 @@ const Dashboard: React.FC<DashboardProps> = ({ streamers }) => {
       
       <div className="live-streamers-section">
         <h2>正在直播 ({liveStreamers.length})</h2>
-        <StreamerList streamers={liveStreamers} loading={loading} />
+        <StreamerList streamers={liveStreamers} loading={allLoading} />
       </div>
       
       <div className="platform-stats">

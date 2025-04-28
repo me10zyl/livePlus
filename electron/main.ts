@@ -84,7 +84,7 @@ ipcMain.handle('set-cookie', async (event, platform, cookie) => {
 });
 
 ipcMain.handle('get-following-list', async (event, platform, forceRefresh = false) => {
-  getFollowingList(platform, forceRefresh);
+  return getFollowingList(platform, forceRefresh);
 });
 
 ipcMain.handle('set-following-list', async (event, platform, list) => {
