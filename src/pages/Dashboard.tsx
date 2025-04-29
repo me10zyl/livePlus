@@ -42,11 +42,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
     refreshAllPlatforms(false)
   }, []);
 
-  const refreshLivingStatus = async (streamer: Streamer)=>{
-      const isLiving = await window.electron.isLiving(streamer)
-      streamer.isLive = isLiving;
-  }
-
   const refreshAllPlatforms = async (force:boolean = true) => {
     console.log('开始刷新所有平台');
     setLoading(true);
@@ -63,9 +58,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
             hasError = true;
             toast.error(`刷新${platform}失败: ${response.error || '未知错误'}`);
           }else{
-            response.data.forEach(streamer => {
-             refreshLivingStatus(streamer)
-            })
             setStreamers(prev => ({ ...prev, [platform]: response.data }));
           }
         } catch (error) {

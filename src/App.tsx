@@ -17,7 +17,6 @@ declare global {
       setCookie: (platform: string, cookie: string) => Promise<boolean>;
       getFollowingList: (platform: string, forceRefresh?: boolean) => Promise<ApiResponse<Streamer[]>>;
       setFollowingList: (platform: string, list: Streamer[]) => Promise<boolean>;
-      isLiving: (streamers: Streamer) => Promise<boolean>;
     };
   }
 }

@@ -1,7 +1,7 @@
 import { ApiResponse, PlatformType,Streamer } from "../../common/types";
-import {getDouyuFollowList} from "./douyu";
-import {getBilibiliFollowList} from "./bilibili";
-import {getHuyaFollowList} from "./huya";
+import {getDouyuFollowList, isDouyuLiving} from "./douyu";
+import {getBilibiliFollowList, isBilibiliLiving} from "./bilibili";
+import {getHuyaFollowList, isHuyaLiving} from "./huya";
 import {getDouyinFollowList, isDouYinLiving} from './douyin'
 import Store from 'electron-store';
 
@@ -35,7 +35,13 @@ if (!forceRefresh) {
     const cachedList = store.get(`followingList.${platform}`, null);
     if (cachedList) {
       console.log(`使用${platform}缓存数据`);
-      return {data: cachedList as Streamer[], success : true};
+      const cacheStreamers = cachedList as Streamer[];
+      cacheStreamers.forEach(
+        async streamer => {
+          streamer.isLive = await isLiving(streamer)
+        }
+      )
+      return {data: cacheStreamers, success : true};
     }
   }
   
