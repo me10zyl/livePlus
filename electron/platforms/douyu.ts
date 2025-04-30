@@ -1,6 +1,6 @@
 // 斗鱼关注列表
 import axios from "axios";
-import {Streamer, ApiResponse} from "../../common/types";
+import {ApiResponse, Streamer} from "../../common/types";
 
 export async function isDouyuLiving(streamer: Streamer): Promise<boolean> {
     try {

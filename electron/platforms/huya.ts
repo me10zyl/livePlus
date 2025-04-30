@@ -1,8 +1,41 @@
 import {Streamer,ApiResponse} from "../../common/types.ts";
 import puppeteer from 'puppeteer';
-
+import axios from "axios";
+import * as cheerio from 'cheerio';
 export async function isHuyaLiving(streamer: Streamer): Promise<boolean> {
-    return streamer.isLive;
+    const url = `https://www.huya.com/${streamer.roomId}`
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+            }
+        });
+        // 使用 cheerio 加载 HTML 内容
+        const $ = cheerio.load(response.data);
+
+        // 查找包含 TT_ROOM_DATA 的 script 标签
+        let isOn = null;
+        $('script').each((i, elem) => {
+            const scriptContent = $(elem).html();
+            if (scriptContent.includes('TT_ROOM_DATA')) {
+                // 使用正则表达式提取 TT_ROOM_DATA 对象
+                const match = scriptContent.match(/var TT_ROOM_DATA = ({[\s\S]*?});/);
+                if (match && match[1]) {
+                    try {
+                        // 解析 TT_ROOM_DATA 对象
+                        const roomData = eval(`(${match[1]})`);
+                        isOn = roomData.isOn;
+                    } catch (e) {
+                        console.error('Error parsing TT_ROOM_DATA:', e);
+                    }
+                }
+            }
+        });
+        return isOn !== null && isOn === 'true';
+    } catch (e) {
+        console.error('bilibili error', e)
+        return streamer.isLive;
+    }
 }
 
 export async function getHuyaFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {
