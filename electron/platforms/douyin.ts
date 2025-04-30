@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import { Streamer ,ApiResponse} from "../../common/types";
 
 export async function isDouYinLiving(streamer: Streamer): Promise<boolean> {
-
+    return streamer.isLive;
 }
 
 export async function getDouyinFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {

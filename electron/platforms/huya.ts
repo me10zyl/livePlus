@@ -2,7 +2,7 @@ import {Streamer,ApiResponse} from "../../common/types.ts";
 import puppeteer from 'puppeteer';
 
 export async function isHuyaLiving(streamer: Streamer): Promise<boolean> {
-
+    return streamer.isLive;
 }
 
 export async function getHuyaFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {

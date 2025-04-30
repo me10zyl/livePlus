@@ -2,7 +2,7 @@ import {Streamer, ApiResponse} from "../../common/types.ts";
 import axios from "axios";
 
 export async function isBilibiliLiving(streamer: Streamer): Promise<boolean> {
-
+    return streamer.isLive;
 }
 
 export async function getBilibiliFollowList(cookies: string): Promise<ApiResponse<Streamer[]>> {
